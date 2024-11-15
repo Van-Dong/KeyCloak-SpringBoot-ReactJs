@@ -18,6 +18,8 @@ import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,7 +42,11 @@ public class ProfileService {
     @NonFinal
     String CLIENT_SECRET;
 
+//    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<ProfileResponse> getAllProfiles(){
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+
         var profiles = profileRepository.findAll();
         return profiles.stream().map(profileMapper::toProfileResponse).toList();
     }
